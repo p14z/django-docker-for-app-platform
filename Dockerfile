@@ -24,14 +24,14 @@ ARG MEDIA_URL=${MEDIA_URL}
 
 # install dependencies
 RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/app/requirements.txt
+ADD requirements.txt /usr/src/app/
 RUN pip install -r /usr/src/app/requirements.txt --no-cache-dir
 
 # copy entrypoint script
-COPY entrypoint.sh /usr/src/app/entrypoint.sh
+ADD entrypoint.sh /usr/src/app/
 
 # copy project
-COPY mysite /usr/src/app/
+ADD mysite /usr/src/app/
 
 # expose port
 EXPOSE 8080
