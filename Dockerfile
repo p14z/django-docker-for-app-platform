@@ -32,7 +32,7 @@ ADD entrypoint.sh /usr/src/app/
 
 # copy project
 ADD mysite /usr/src/app/
-RUN mkdir /user/src/app/log
+RUN mkdir -p /user/src/app/log
 
 # expose port
 EXPOSE 8080
