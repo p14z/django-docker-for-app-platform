@@ -28,10 +28,10 @@ COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r /usr/src/app/requirements.txt --no-cache-dir
 
 # copy entrypoint script
-COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
+COPY entrypoint.sh /usr/src/app/entrypoint.sh
 
 # copy project
-COPY ./mysite/ /usr/src/app/
+COPY mysite /usr/src/app/
 
 # expose port
 EXPOSE 8080
