@@ -31,7 +31,7 @@ RUN pip install -r /usr/src/app/requirements.txt --no-cache-dir
 COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
 
 # copy project
-COPY ./mysite /usr/src/app/mysite
+COPY ./mysite /usr/src/app/
 
 # expose port
 EXPOSE 8080
