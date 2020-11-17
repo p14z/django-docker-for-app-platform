@@ -18,6 +18,6 @@ jobs:
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
         echo "DEBUG=${{ secrets.DEBUG }}" >> .env
     - name: Run container
-      run: docker run -d --env-file .env --name django-docker django-docker:latest
+      run: docker run -d --name django-docker --env-file .env --publish 8080:8080 django-docker:latest
     - name: Test container
       run: docker run --network container:django-docker appropriate/curl --retry 10 --retry-connrefused http://localhost:8080/
