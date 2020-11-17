@@ -17,3 +17,6 @@ Deploying the App
 
 * There is no need to set a Run Command
 * The default HTTP Port for the project is already ``8080``
+
+**Note:**
+Static and Media files are served using Gunicorn, this is not recommended for production.
