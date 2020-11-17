@@ -64,8 +64,7 @@ coverage.xml
 db.sqlite3
 db.sqlite3-journal
 huey.db
-staticfiles/
-mediafiles/
+media/
 
 # Flask stuff:
 instance/
@@ -84,7 +83,7 @@ target/
 .python-version
 
 # pipenv
-#Pipfile.lock
+Pipfile.lock
 
 # celery beat schedule file
 celerybeat-schedule

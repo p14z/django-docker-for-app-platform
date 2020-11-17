@@ -1,3 +1,4 @@
+import dj_database_url
 import os
 
 from decouple import Csv, config
@@ -6,18 +7,25 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = config('SECRET_KEY')
 
-DEBUG = config('DEBUG', cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost, 127.0.0.1', cast=Csv())
 
-SITE_ID = config('SITE_ID', cast=int)
+INTERNAL_IPS = config('INTERNAL_IPS', default='127.0.0.1', cast=Csv())
+
+SITE_ID = config('SITE_ID', default=1, cast=int)
+
+AUTH_USER_MODEL = 'auth.User'
 
 ROOT_URLCONF = 'mysite.urls'
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = config('DATA_UPLOAD_MAX_NUMBER_FIELDS', default=1000, cast=int)
+
 # Application definition
 INSTALLED_APPS = [
+    # Django modules
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -25,6 +33,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+
+    # Local apps
+    'core',
+
+    # External apps
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -56,9 +70,18 @@ TEMPLATES = [
 
 # Database
 DATABASES = {
+    'default': dj_database_url.parse(
+        config('DATABASE_URL', default='sqlite:///{}'.format(os.path.join(BASE_DIR, 'db.sqlite3')))
+    )
+}
+
+DISABLE_SERVER_SIDE_CURSORS = config('DISABLE_SERVER_SIDE_CURSORS', default=False, cast=bool)
+
+# Cache
+CACHES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
     }
 }
 
@@ -78,22 +101,25 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Password reset link expiration days
+PASSWORD_RESET_TIMEOUT_DAYS = config('PASSWORD_RESET_TIMEOUT_DAYS', default=1, cast=int)
+
 # Internationalization
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = config('LANGUAGE_CODE', default='en-us')
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = config('TIME_ZONE', default='UTC')
 
-USE_I18N = True
+USE_I18N = config('USE_I18N', default=True, cast=bool)
 
-USE_L10N = True
+USE_L10N = config('USE_L10N', default=False, cast=bool)
 
-USE_TZ = True
+USE_TZ = config('USE_TZ', default=False, cast=bool)
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = config('STATIC_URL')
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = config('STATIC_URL', default='/static/')
 
 # Media files
-MEDIA_URL = config('MEDIA_URL')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = config('MEDIA_URL', default='/media/')

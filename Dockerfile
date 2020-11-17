@@ -1,38 +1,28 @@
-FROM python:3.7-alpine
+FROM python:3.8-alpine
 
 # set work directory
 WORKDIR /usr/src/app
 
-# install gettext
-RUN apk update && apk add gettext
-
-# define arguments and default values
-ARG SECRET_KEY
-ARG DEBUG="False"
-ARG ALLOWED_HOSTS="localhost, 127.0.01"
-ARG SITE_ID="1"
-ARG STATIC_URL="/static/"
-ARG MEDIA_URL="/media/"
-
-# set environment variables
-ENV SECRET_KEY=${SECRET_KEY}
-ENV DEBUG=${DEBUG}
-ENV ALLOWED_HOSTS=${ALLOWED_HOSTS}
-ENV SITE_ID=${SITE_ID}
-ENV STATIC_URL=${STATIC_URL}
-ENV MEDIA_URL=${MEDIA_URL}
-
 # install dependencies
 RUN pip install --upgrade pip
 ADD requirements.txt /usr/src/app/
-RUN pip install -r /usr/src/app/requirements.txt --no-cache-dir
+RUN apk update && \
+    apk add --virtual build-deps build-base python3-dev musl-dev postgresql-dev && \
+    apk add gettext && \
+    apk add libffi-dev openssl-dev && \
+    apk add postgresql-libs && \
+    apk add memcached && \
+    apk add jpeg-dev zlib-dev libjpeg && \
+    apk add libmagic && \
+    pip install -r requirements.txt && \
+    apk del build-deps
 
 # copy entrypoint script
 ADD entrypoint.sh /usr/src/app/
 
 # copy project
 ADD mysite /usr/src/app/
-RUN mkdir -p /user/src/app/log
+RUN mkdir -p /usr/src/app/log
 
 # expose port
 EXPOSE 8080
