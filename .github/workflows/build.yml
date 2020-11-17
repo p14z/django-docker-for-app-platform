@@ -12,6 +12,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build image from Dockerfile
-      run: docker build --tag django-docker:v1 .
+      run: docker build --tag django-docker:latest .
     - name: Test image
-      run: docker run -e SECRET_KEY="${{ secrets.SECRET_KEY }}" -p 8080:8080 django-docker:v1
+      run: docker run -e SECRET_KEY="${{ secrets.SECRET_KEY }}" -d django-docker:latest
