@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Docker CI
 
 on:
   pull_request:
@@ -11,11 +11,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
+    - name: Build image from Dockerfile
       run: docker build --tag django-docker:latest .
-    - name: Run
+    - name: Run image
       run: docker run -e SECRET_KEY="${{ secrets.SECRET_KEY }}" -e DEBUG="${{ secrets.DEBUG }}" -p 8080:8080 -d django-docker:latest
-    - name: Test
+    - name: Test Container
       uses: wei/curl@v1
       with:
-        args: -X GET http://localhost:8080/
+        args: --retry 10 --retry-connrefused http://localhost:8080/
