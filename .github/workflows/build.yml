@@ -1,0 +1,17 @@
+name: Build Docker Image
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build image from Dockerfile
+      run: docker build --tag django-docker:v1 .
+    - name: Test image
+      run: docker run -e SECRET_KEY=${{ secrets.SECRET_KEY }} -e DEBUG=${{ secrets.DEBUG }} django-docker:v1
